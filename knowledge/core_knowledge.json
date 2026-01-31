@@ -50,7 +50,7 @@
   {
     "topic": "Stomach Issues",
     "symptoms_or_keywords": ["nausea", "vomiting", "stomach pain", "diarrhea", "upset stomach", "abdominal pain"],
-    "response_guidance": "Stomach issues can be from many things - what you ate, stress, or a bug. Where exactly does it hurt? Any nausea or changes in bowel movements?",,
+    "response_guidance": "Stomach issues can be from many things - what you ate, stress, or a bug. Where exactly does it hurt? Any nausea or changes in bowel movements?",
     "risk_level": "medium",
     "confidence": "0.7",
     "source": "symptom_patterns"

@@ -1,6 +1,11 @@
 import os
 from typing import Optional
 from pydantic import BaseSettings
+from dotenv import load_dotenv
+
+# Load .env from project root and app directory
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"), override=False)
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"), override=False)
 
 class AppConfig(BaseSettings):
     # API Keys
@@ -15,8 +20,8 @@ class AppConfig(BaseSettings):
     
     # AI Provider Configuration
     llm_provider: str = "grok"
-    grok_model: str = "grok-beta"
-    gemini_model: str = "gemini-pro"
+    grok_model: str = "llama-3.1-8b-instant"
+    gemini_model: str = "gemini-1.5-flash"
     fallback_provider: Optional[str] = None
     
     # File Paths
@@ -30,7 +35,7 @@ class AppConfig(BaseSettings):
     max_knowledge_entries: int = 10
     rate_limit_requests: int = 60
     rate_limit_window: int = 60
-    expand_knowledge_enabled: bool = True
+    expand_knowledge_enabled: bool = False
     
     # API Settings
     api_timeout: int = 30

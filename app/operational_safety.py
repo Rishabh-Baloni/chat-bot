@@ -93,12 +93,14 @@ class ObservabilityMetrics:
         self.error_count = 0
         self.api_failures = defaultdict(int)
         self.response_times = deque(maxlen=1000)
+        self.response_timestamps = deque(maxlen=1000)
         self.start_time = time.time()
     
     def record_request(self, response_time: float):
         """Record successful request"""
         self.request_count += 1
         self.response_times.append(response_time)
+        self.response_timestamps.append(time.time())
     
     def record_error(self, error_type: str = "general"):
         """Record error"""
@@ -120,7 +122,7 @@ class ObservabilityMetrics:
             "error_rate": self.error_count / max(self.request_count, 1),
             "avg_response_time": avg_response_time,
             "api_failures": dict(self.api_failures),
-            "requests_per_minute": len([t for t in self.response_times if time.time() - t < 60])
+            "requests_per_minute": len([t for t in self.response_timestamps if time.time() - t < 60])
         }
 
 class MedicalSafetyEnforcer:

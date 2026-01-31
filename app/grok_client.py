@@ -1,7 +1,7 @@
 import os
 import httpx
 import asyncio
-from typing import Optional
+from typing import Optional, Tuple, Dict
 from config import get_config
 from logger import logger
 
@@ -19,10 +19,9 @@ class GrokClient:
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json"
         }
-        # Use Groq model
-        self.model = "llama3-8b-8192"
+        self.model = "llama-3.1-8b-instant"
     
-    async def chat(self, prompt: str) -> tuple[str, dict]:
+    async def chat(self, prompt: str) -> Tuple[str, Dict]:
         """Send chat request to Groq API with timeout and error handling"""
         async with httpx.AsyncClient(timeout=config.api_timeout) as client:
             payload = {

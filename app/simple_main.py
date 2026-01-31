@@ -6,6 +6,10 @@ import httpx
 import asyncio
 import uuid
 import time
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"), override=False)
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"), override=False)
 
 app = Flask(__name__)
 CORS(app)
