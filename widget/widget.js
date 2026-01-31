@@ -129,10 +129,14 @@
         
         // For bot messages, decode HTML entities properly
         if (!isUser) {
-            // Create a temporary element to decode HTML entities
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = message;
-            messageDiv.textContent = tempDiv.textContent || tempDiv.innerText || message;
+            // Simple but effective HTML entity decoding
+            message = message.replace(/&#39;/g, "'");
+            message = message.replace(/&#x27;/g, "'");
+            message = message.replace(/&amp;/g, '&');
+            message = message.replace(/&lt;/g, '<');
+            message = message.replace(/&gt;/g, '>');
+            message = message.replace(/&quot;/g, '"');
+            messageDiv.textContent = message;
         } else {
             // For user messages, use textContent for security
             messageDiv.textContent = message;

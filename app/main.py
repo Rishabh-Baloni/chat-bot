@@ -116,7 +116,7 @@ def determine_next_stage(current_stage, message, context):
     user_message_count = len([line for line in context.split('\n') if line.startswith('User:')])
     
     # Force conclusion if user seems frustrated or conversation is long
-    if any(conclusion_signals) and user_message_count >= 3:
+    if any(conclusion_signals) or user_message_count >= 4:
         return "conclusion"
     
     # Goodbye detection
