@@ -10,6 +10,9 @@ setup-environment.ps1
 simple_requirements.txt
 test.html
 
+# Amazon Q memory bank (not needed for users)
+.amazonq/
+
 # Environment variables
 .env
 .env.local
