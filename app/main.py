@@ -16,6 +16,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Simple conversation memory
 conversations = {}
+conversation_stages = {}
 
 @app.route('/')
 def root():
@@ -41,9 +42,12 @@ def chat():
         if not message:
             return jsonify({"error": "Message required"}), 400
         
-        # Get conversation history
+        # Get conversation history and stage
         if session_id not in conversations:
             conversations[session_id] = []
+            conversation_stages[session_id] = "greeting"
+        
+        current_stage = conversation_stages[session_id]
         
         # Add user message to history
         conversations[session_id].append(f"User: {message}")
@@ -55,16 +59,25 @@ def chat():
         # Build context from conversation history
         conversation_context = "\n".join(conversations[session_id][-6:])
         
+        # Determine next stage based on current stage and user input
+        next_stage = determine_next_stage(current_stage, message, conversation_context)
+        conversation_stages[session_id] = next_stage
+        
         # Simple chat response using httpx
-        response = asyncio.run(call_groq_api(message, conversation_context))
+        response = asyncio.run(call_groq_api(message, conversation_context, current_stage, next_stage))
         
         # Add bot response to conversation history
         conversations[session_id].append(f"Assistant: {response}")
         
+        # Add stage info for debugging
+        debug_info = {"current_stage": current_stage, "next_stage": next_stage} if os.getenv("DEBUG") else None
+        
         return jsonify({
             "response": response,
             "session_id": session_id,
-            "version": "1.0.0"
+            "version": "1.0.0",
+            "stage": next_stage,
+            "debug": debug_info
         })
         
     except Exception as e:
@@ -74,7 +87,41 @@ def chat():
             "version": "1.0.0"
         })
 
-async def call_groq_api(message, conversation_context=""):
+def determine_next_stage(current_stage, message, context):
+    """Determine conversation flow stage"""
+    message_lower = message.lower()
+    
+    # Emergency keywords - skip to conclusion
+    emergency_keywords = ["chest pain", "can't breathe", "severe bleeding", "emergency"]
+    if any(keyword in message_lower for keyword in emergency_keywords):
+        return "emergency_conclusion"
+    
+    # Goodbye keywords - end conversation
+    goodbye_keywords = ["bye", "goodbye", "thanks", "thank you", "that's all"]
+    if any(keyword in message_lower for keyword in goodbye_keywords):
+        return "goodbye"
+    
+    # Stage progression logic
+    if current_stage == "greeting":
+        return "symptom_gathering"
+    elif current_stage == "symptom_gathering":
+        # After 3-4 exchanges, move to follow-up
+        message_count = len([line for line in context.split('\n') if line.startswith('User:')])
+        if message_count >= 3:
+            return "follow_up_questions"
+        return "symptom_gathering"
+    elif current_stage == "follow_up_questions":
+        # After 2-3 follow-ups, conclude
+        message_count = len([line for line in context.split('\n') if line.startswith('User:')])
+        if message_count >= 5:
+            return "conclusion"
+        return "follow_up_questions"
+    elif current_stage == "conclusion":
+        return "goodbye"
+    else:
+        return "greeting"
+
+async def call_groq_api(message, conversation_context="", current_stage="greeting", next_stage="symptom_gathering"):
     try:
         # Load and use knowledge base
         relevant_knowledge = ""
@@ -90,26 +137,72 @@ async def call_groq_api(message, conversation_context=""):
         except:
             pass
         
-        # Enhanced conversational system prompt with memory
-        system_prompt = f"""You are a helpful AI health assistant. Remember the conversation context and provide medical advice when appropriate.
+        # Stage-based system prompts
+        stage_prompts = {
+            "greeting": "You are a friendly AI health assistant. Greet the user warmly and ask what health concerns they have today. Keep it brief and welcoming.",
+            
+            "symptom_gathering": f"""You are gathering initial symptom information. 
 
 Conversation so far:
 {conversation_context}
 
 {relevant_knowledge}
 
-Key rules:
-- Remember what the user told you previously
-- For chronic symptoms (2+ weeks), recommend seeing a doctor
-- For food triggers, suggest avoiding the trigger
-- Provide specific advice, not just questions
-- Keep responses under 2 sentences
-- If you have enough info, give recommendations
+Ask specific questions about:
+- Main symptoms and location
+- Duration (how long)
+- Severity (1-10 scale)
+- What makes it better/worse
 
-For headaches lasting 2+ weeks with known triggers:
-- Recommend avoiding the trigger (like onions)
-- Suggest seeing a doctor for evaluation
-- Mention keeping a headache diary"""
+Keep responses under 2 sentences. Ask ONE specific question.""",
+            
+            "follow_up_questions": f"""You are gathering detailed follow-up information.
+
+Conversation so far:
+{conversation_context}
+
+{relevant_knowledge}
+
+Ask about:
+- Associated symptoms
+- Triggers or patterns
+- Previous treatments tried
+- Impact on daily life
+
+Keep responses under 2 sentences. Ask ONE specific follow-up question.""",
+            
+            "conclusion": f"""You are providing final assessment and recommendations.
+
+Conversation so far:
+{conversation_context}
+
+{relevant_knowledge}
+
+Provide:
+1. Brief summary of symptoms
+2. Possible causes (most likely first)
+3. Clear recommendations (see doctor if serious, home care if minor)
+4. When to seek immediate care
+
+End with: "Is there anything else you'd like to know about your symptoms?"""",
+            
+            "emergency_conclusion": f"""EMERGENCY RESPONSE NEEDED.
+
+Conversation so far:
+{conversation_context}
+
+{relevant_knowledge}
+
+Provide:
+1. "These symptoms require immediate medical attention."
+2. "Please call emergency services or go to the nearest emergency room."
+3. Brief explanation why it's urgent
+4. "Don't wait - seek help now."""",
+            
+            "goodbye": "Thank the user for using the health assistant. Wish them well and remind them to seek professional medical care for serious concerns. Keep it brief and caring."
+        }
+        
+        system_prompt = stage_prompts.get(current_stage, stage_prompts["greeting"])
         
         async with httpx.AsyncClient() as client:
             response = await client.post(
