@@ -184,7 +184,7 @@ Provide:
 3. Clear recommendations (see doctor if serious, home care if minor)
 4. When to seek immediate care
 
-End with: "Is there anything else you'd like to know about your symptoms?"""",
+End with: 'Is there anything else you would like to know about your symptoms?'""",
             
             "emergency_conclusion": f"""EMERGENCY RESPONSE NEEDED.
 
@@ -194,10 +194,10 @@ Conversation so far:
 {relevant_knowledge}
 
 Provide:
-1. "These symptoms require immediate medical attention."
-2. "Please call emergency services or go to the nearest emergency room."
+1. 'These symptoms require immediate medical attention.'
+2. 'Please call emergency services or go to the nearest emergency room.'
 3. Brief explanation why it's urgent
-4. "Don't wait - seek help now."""",
+4. 'Do not wait - seek help now.'""",
             
             "goodbye": "Thank the user for using the health assistant. Wish them well and remind them to seek professional medical care for serious concerns. Keep it brief and caring."
         }
