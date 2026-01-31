@@ -76,19 +76,17 @@ def chat():
 
 async def call_groq_api(message, conversation_context=""):
     try:
-        # Load AI-Doctor rules and knowledge (but don't send to API to avoid rate limits)
-        rules_content = ""
-        knowledge_content = ""
-        
-        try:
-            with open('../rules/rules.txt', 'r', encoding='utf-8') as f:
-                rules_content = f.read()
-        except:
-            pass
-            
+        # Load and use knowledge base
+        relevant_knowledge = ""
         try:
             with open('../knowledge/core_knowledge.json', 'r', encoding='utf-8') as f:
-                knowledge_content = f.read()
+                knowledge_data = json.load(f)
+                # Find relevant knowledge entries
+                for entry in knowledge_data:
+                    keywords = entry.get('symptoms_or_keywords', [])
+                    if any(keyword.lower() in message.lower() for keyword in keywords):
+                        relevant_knowledge += f"\nRelevant info: {entry.get('response_guidance', '')}"
+                        break  # Use first match
         except:
             pass
         
@@ -97,6 +95,8 @@ async def call_groq_api(message, conversation_context=""):
 
 Conversation so far:
 {conversation_context}
+
+{relevant_knowledge}
 
 Key rules:
 - Remember what the user told you previously
