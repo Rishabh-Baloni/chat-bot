@@ -88,7 +88,7 @@ def chat():
         })
 
 def determine_next_stage(current_stage, message, context):
-    """Determine conversation flow stage"""
+    """Determine conversation flow stage using smart logic"""
     message_lower = message.lower()
     
     # Emergency keywords - skip to conclusion
@@ -96,24 +96,39 @@ def determine_next_stage(current_stage, message, context):
     if any(keyword in message_lower for keyword in emergency_keywords):
         return "emergency_conclusion"
     
-    # Goodbye keywords - end conversation
-    goodbye_keywords = ["bye", "goodbye", "thanks", "thank you", "that's all", "tell me what to do", "what to do", "help me"]
-    if any(keyword in message_lower for keyword in goodbye_keywords):
+    # User wants conclusion - detect frustration or request for advice
+    conclusion_signals = [
+        len(message.strip()) <= 3,  # Short answers like "no", "yes", "8"
+        "what" in message_lower and ("do" in message_lower or "should" in message_lower),
+        "help" in message_lower and len(message.split()) <= 3,
+        "advice" in message_lower,
+        "recommend" in message_lower,
+        message_lower in ["nothing", "no", "nah", "nahhhh", "none"]
+    ]
+    
+    # Count user messages to determine conversation length
+    user_message_count = len([line for line in context.split('\n') if line.startswith('User:')])
+    
+    # Force conclusion if user seems frustrated or conversation is long
+    if any(conclusion_signals) and user_message_count >= 3:
         return "conclusion"
     
-    # Stage progression logic
+    # Goodbye detection
+    goodbye_keywords = ["bye", "goodbye", "thanks", "thank you", "that's all"]
+    if any(keyword in message_lower for keyword in goodbye_keywords):
+        return "goodbye"
+    
+    # Smart stage progression based on information gathered
     if current_stage == "greeting":
         return "symptom_gathering"
     elif current_stage == "symptom_gathering":
-        # After 3-4 exchanges, move to follow-up
-        message_count = len([line for line in context.split('\n') if line.startswith('User:')])
-        if message_count >= 3:
+        # Move to follow-up after basic info is gathered
+        if user_message_count >= 2:
             return "follow_up_questions"
         return "symptom_gathering"
     elif current_stage == "follow_up_questions":
-        # After 2-3 follow-ups, conclude
-        message_count = len([line for line in context.split('\n') if line.startswith('User:')])
-        if message_count >= 4:  # Reduced from 5 to 4
+        # Move to conclusion after sufficient follow-up
+        if user_message_count >= 4:
             return "conclusion"
         return "follow_up_questions"
     elif current_stage == "conclusion":
@@ -178,13 +193,13 @@ Conversation so far:
 
 {relevant_knowledge}
 
-Based on the conversation, provide:
-1. Summary: 'You have episodic forehead headaches at night, rated 8/10 severity, with mood/appetite changes'
-2. Assessment: 'This could be tension headaches, migraines, or stress-related headaches'
-3. Recommendations: 'Try regular sleep schedule, stress management, stay hydrated. See a doctor if headaches worsen or become more frequent'
-4. Red flags: 'Seek immediate care if you have sudden severe headache, vision changes, or neck stiffness'
+Analyze the conversation and provide:
+1. Summary of key symptoms mentioned
+2. Most likely causes based on symptoms
+3. Specific actionable recommendations
+4. When to seek medical care
 
-End with: 'I hope this helps. Take care and feel better soon!'""",
+Be concise and helpful. End with a caring message.""",
             
             "emergency_conclusion": f"""EMERGENCY RESPONSE NEEDED.
 
