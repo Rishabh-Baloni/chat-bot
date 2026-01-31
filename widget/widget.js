@@ -5,7 +5,7 @@
     window.ChatbotConfig = window.ChatbotConfig || {};
     
     const DEFAULT_CONFIG = {
-        apiBaseUrl: window.location.origin,
+        apiBaseUrl: 'https://chat-bot-hizj.onrender.com',
         buttonText: '💬',
         headerText: 'AI Assistant',
         placeholder: 'Type your message...',
