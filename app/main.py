@@ -65,24 +65,37 @@ async def call_groq_api(message):
                 },
                 json={
                     "messages": [
-                        {"role": "system", "content": "You are a helpful AI assistant."},
+                        {"role": "system", "content": "You are a helpful AI assistant. Be friendly and concise."},
                         {"role": "user", "content": message}
                     ],
                     "model": "llama3-8b-8192",
                     "temperature": 0.7,
-                    "max_tokens": 1000
+                    "max_tokens": 500
                 },
                 timeout=30
             )
             
+            print(f"Groq API Status: {response.status_code}")  # Debug log
+            print(f"Groq API Response: {response.text[:200]}")  # Debug log
+            
             if response.status_code == 200:
                 result = response.json()
-                return result["choices"][0]["message"]["content"]
+                if "choices" in result and len(result["choices"]) > 0:
+                    return result["choices"][0]["message"]["content"]
+                else:
+                    return "I received an empty response. Please try again."
+            elif response.status_code == 401:
+                return "API authentication failed. Please check the API key."
+            elif response.status_code == 429:
+                return "I'm currently busy. Please try again in a moment."
             else:
-                return "I'm having trouble connecting. Please try again."
+                return f"API returned status {response.status_code}. Please try again."
                 
-    except Exception:
-        return "I'm experiencing technical difficulties. Please try again."
+    except httpx.TimeoutException:
+        return "Request timed out. Please try again."
+    except Exception as e:
+        print(f"Groq API Error: {str(e)}")  # Debug log
+        return f"Technical error: {str(e)[:100]}. Please try again."
 
 @app.route('/widget/<path:filename>')
 def serve_widget(filename):
