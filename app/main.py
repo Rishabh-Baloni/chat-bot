@@ -68,7 +68,7 @@ async def call_groq_api(message):
                         {"role": "system", "content": "You are a helpful AI assistant. Be friendly and concise."},
                         {"role": "user", "content": message}
                     ],
-                    "model": "llama3-8b-8192",
+                    "model": "llama-3.1-8b-instant",
                     "temperature": 0.7,
                     "max_tokens": 500
                 },
