@@ -1,6 +1,10 @@
+# Development and testing files
+test-chatbot.html
+*.log
+
 # Environment variables
 .env
-*.env
+.env.local
 
 # Python
 __pycache__/
@@ -24,9 +28,10 @@ wheels/
 .installed.cfg
 *.egg
 
-# Logs
-logs/
-*.log
+# Virtual environments
+venv/
+env/
+ENV/
 
 # IDE
 .vscode/
@@ -38,6 +43,33 @@ logs/
 .DS_Store
 Thumbs.db
 
-# Temporary files
-*.tmp
-*.temp
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity

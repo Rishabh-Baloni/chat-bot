@@ -1,194 +1,147 @@
-# Self-Hosted Knowledge-Driven Chatbot Engine
+# Self-Hosted AI Chatbot Engine
 
-A self-hostable chatbot system with embeddable web widget that uses Grok API for chat reasoning and Gemini API for knowledge expansion.
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
 
-## Features
+A complete self-hosted chatbot solution with embeddable web widget. Uses Groq API for fast AI responses and Gemini API for knowledge expansion.
 
-- 🤖 **Dual AI System**: Grok for real-time chat, Gemini for knowledge processing
-- 🌐 **Embeddable Widget**: Single script tag integration for any website
-- 📚 **Knowledge Management**: JSON-based knowledge system with expansion capabilities
-- 🔧 **Rule Engine**: Customizable behavior rules
-- 🚀 **Render Ready**: Optimized for Render free tier deployment
-- 🔐 **Self-Hosted**: Use your own API keys, no shared resources
+## ✨ Features
 
-## Quick Start
+- 🤖 **Dual AI System**: Groq for chat, Gemini for knowledge processing
+- 🌐 **Embeddable Widget**: One-line integration for any website
+- 📚 **Smart Knowledge Base**: JSON-based with auto-expansion
+- 🎨 **Fully Customizable**: Rules, appearance, and behavior
+- 🚀 **Deploy Ready**: Optimized for Render free tier
+- 🔐 **Self-Hosted**: Your API keys, your data
 
-### 1. Deploy to Render
+## 🚀 Quick Start
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com)
+**New to this?** → [Setup Guide](SETUP.md)  
+**Want to customize?** → [Customization Guide](CUSTOMIZATION.md)
 
-1. Fork this repository
-2. Connect to Render
-3. Set environment variables (see below)
-4. Deploy!
+### 1-Minute Deploy
+1. Get API keys: [Groq](https://console.groq.com/keys) + [Gemini](https://aistudio.google.com/app/apikey)
+2. Fork this repo
+3. Deploy to [Render](https://render.com) 
+4. Set environment variables
+5. Embed: `<script src="https://your-app.onrender.com/widget/widget.js"></script>`
 
-### 2. Environment Variables
+## 📋 What You Get
 
-```bash
-GROK_API_KEY=your_grok_api_key_here
-GEMINI_API_KEY=your_gemini_api_key_here
-PORT=8000
+### Core Files
+```
+├── app/
+│   ├── main.py              # Flask API server
+│   └── operational_safety.py # Security utilities
+├── widget/
+│   ├── widget.js            # Embeddable chat widget
+│   └── widget.css           # Widget styling
+├── knowledge/
+│   ├── core_knowledge.json  # Your knowledge base
+│   └── expanded_knowledge.json # AI-generated entries
+├── rules/
+│   └── rules.txt            # Bot behavior rules
+├── requirements.txt         # Python dependencies
+└── runtime.txt             # Python version
 ```
 
-### 3. Embed Widget
+### API Endpoints
+- `POST /chat` - Send messages to bot
+- `POST /expand-knowledge` - Add knowledge from text
+- `GET /health` - Check system status
+- `GET /widget/widget.js` - Embeddable widget
 
-Add to any website:
+## 🎯 Use Cases
 
-```html
-<script src="https://your-render-app.onrender.com/widget/widget.js"></script>
+- **Customer Support**: 24/7 automated help desk
+- **Lead Generation**: Qualify prospects on your website  
+- **FAQ Bot**: Answer common questions instantly
+- **Product Assistant**: Help users find what they need
+- **Internal Tools**: Employee self-service portal
+
+## 🛠️ Customization Examples
+
+### Change Bot Personality
+```txt
+# Edit rules/rules.txt
+You are a friendly assistant for [YOUR COMPANY].
+Always be helpful and professional.
+If unsure, say "Let me connect you with a human."
 ```
 
-## API Endpoints
-
-### Chat
-```bash
-POST /chat
-{
-  "message": "Hello!",
-  "session_id": "optional"
-}
-```
-
-### Expand Knowledge
-```bash
-POST /expand-knowledge
-{
-  "raw_text": "Information to process",
-  "source_tag": "source_name"
-}
-```
-
-## Knowledge System
-
-### Core Knowledge (`knowledge/core_knowledge.json`)
-Static, verified knowledge entries.
-
-### Expanded Knowledge (`knowledge/expanded_knowledge.json`)
-Gemini-generated structured entries.
-
-### Knowledge Entry Format
+### Add Your Knowledge
 ```json
+// Edit knowledge/core_knowledge.json
 {
-  "topic": "Topic name",
-  "symptoms_or_keywords": ["keyword1", "keyword2"],
-  "response_guidance": "How to respond about this topic",
-  "risk_level": "low/medium/high",
-  "confidence": "0.0-1.0",
-  "source": "source_tag"
+  "topic": "Business Hours",
+  "symptoms_or_keywords": ["hours", "open", "closed"],
+  "response_guidance": "We're open Monday-Friday 9AM-6PM EST",
+  "risk_level": "low",
+  "confidence": 1.0
 }
 ```
 
-## Rules System
-
-Edit `rules/rules.txt` to customize chatbot behavior:
-
-- Core behavior guidelines
-- Safety rules
-- Response formatting
-- Domain-specific instructions
-
-## Local Development
-
-1. **Install Dependencies**
-```bash
-pip install -r requirements.txt
+### Style the Widget
+```html
+<script>
+window.ChatbotConfig = {
+  buttonText: '💬 Help',
+  headerText: 'Your Company Support',
+  theme: 'dark',
+  position: 'bottom-left'
+};
+</script>
 ```
 
-2. **Set Environment Variables**
+## 🔧 Local Development
+
 ```bash
+# 1. Clone and setup
+git clone https://github.com/yourusername/your-repo
+cd your-repo
 cp .env.example .env
 # Edit .env with your API keys
+
+# 2. Install and run
+pip install -r requirements.txt
+cd app && python main.py
+
+# 3. Test at http://localhost:8000
 ```
 
-3. **Run Server**
-```bash
-cd app
-python main.py
-```
-
-4. **Test Widget**
-Create test HTML file:
-```html
-<!DOCTYPE html>
-<html>
-<head><title>Test</title></head>
-<body>
-    <h1>Test Page</h1>
-    <script src="http://localhost:8000/widget/widget.js"></script>
-</body>
-</html>
-```
-
-## Architecture
+## 📊 Architecture
 
 ```
-User Website
- ↓
-Embeds Chat Widget JS
- ↓
-Widget Calls Your Render Backend
- ↓
-Backend Loads: Rules + Knowledge
- ↓
-Backend Calls Grok API
- ↓
-Returns Chat Response
+User Website → Widget → Your Render App → Groq API → Response
+                    ↓
+               Knowledge Base + Rules
 ```
 
-## AI Model Usage
+## 🔒 Security Features
 
-### Grok API (Primary Chat)
-- Natural conversation
-- Context reasoning
-- Rule following
-- Knowledge-grounded answers
+- Input sanitization and validation
+- Rate limiting and abuse detection  
+- Medical/legal disclaimer enforcement
+- Prompt injection protection
+- Session management
 
-### Gemini API (Knowledge Processing)
-- Single-prompt knowledge expansion
-- Structured data extraction
-- Confidence scoring
-- Risk assessment
+## 💰 Cost Estimate
 
-## Customization
+- **Render Hosting**: Free tier (750 hours/month)
+- **Groq API**: ~$0.10 per 1M tokens (very cheap)
+- **Gemini API**: Free tier (15 requests/minute)
+- **Total**: Essentially free for most use cases
 
-### Adding Knowledge
-1. **Manual**: Edit `knowledge/core_knowledge.json`
-2. **API**: Use `/expand-knowledge` endpoint
-3. **Bulk**: Process text files through Gemini
+## 🆘 Support
 
-### Updating Rules
-Edit `rules/rules.txt` with your specific guidelines.
+1. **Setup Issues**: Check [SETUP.md](SETUP.md)
+2. **Customization**: See [CUSTOMIZATION.md](CUSTOMIZATION.md)  
+3. **API Problems**: Verify keys in Render environment
+4. **Widget Issues**: Check browser console for errors
 
-### Widget Styling
-Modify `widget/widget.css` for custom appearance.
-
-## Deployment Notes
-
-### Render Configuration
-- **Build Command**: `pip install -r requirements.txt`
-- **Start Command**: `cd app && python main.py`
-- **Environment**: Python 3.9+
-
-### Performance
-- Chat response: <5 seconds (excluding cold start)
-- Widget load: <1 second
-- Knowledge expansion: Variable (depends on text size)
-
-## Security
-
-- Rate limiting implemented
-- API keys server-side only
-- Input sanitization
-- CORS configured for widget domains
-
-## Support
-
-For issues and questions:
-1. Check the knowledge base
-2. Review rules configuration
-3. Verify API key setup
-4. Check Render logs
-
-## License
+## 📄 License
 
 MIT License - Use freely for personal and commercial projects.
+
+---
+
+**Ready to deploy?** → [Get Started](SETUP.md) | **Questions?** → [Open an Issue](../../issues)
