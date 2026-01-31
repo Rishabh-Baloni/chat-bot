@@ -2,6 +2,14 @@
 test-chatbot.html
 *.log
 
+# Legacy files
+DEPLOYMENT_GUIDE.md
+INSTALLATION_RULES.md
+plan.txt
+setup-environment.ps1
+simple_requirements.txt
+test.html
+
 # Environment variables
 .env
 .env.local

@@ -1,6 +1,6 @@
 # Self-Hosted AI Chatbot Engine
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Rishabh-Baloni/chat-bot)
 
 A complete self-hosted chatbot solution with embeddable web widget. Uses Groq API for fast AI responses and Gemini API for knowledge expansion.
 
@@ -96,7 +96,7 @@ window.ChatbotConfig = {
 
 ```bash
 # 1. Clone and setup
-git clone https://github.com/yourusername/your-repo
+git clone https://github.com/Rishabh-Baloni/chat-bot
 cd your-repo
 cp .env.example .env
 # Edit .env with your API keys

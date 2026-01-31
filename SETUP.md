@@ -17,7 +17,7 @@
 ## 2. Deploy to Render
 
 ### Option A: One-Click Deploy
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/YOUR_USERNAME/YOUR_REPO_NAME)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Rishabh-Baloni/chat-bot)
 
 ### Option B: Manual Deploy
 1. Fork this repository
