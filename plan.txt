@@ -1,0 +1,298 @@
+📄 FINAL BUILD SPEC — CHATBOT FRAMEWORK + WIDGET SYSTEM
+🏷 PRODUCT NAME (Concept)
+
+Self-Hosted Knowledge-Driven Chatbot Engine with Embeddable Web Widget
+
+🎯 FINAL PRODUCT GOAL
+
+Build a self-hostable chatbot system that:
+
+Runs on Render (user deploys themselves)
+
+Uses:
+
+Grok API → Main Chat Reasoning (NAT / Conversation)
+
+Gemini API → Knowledge Expansion + Structuring (Single Prompt Heavy Work)
+
+Provides:
+
+Embeddable JS Widget for integration into any web app
+
+Uses:
+
+Local knowledge files (JSON)
+
+Rule files (TXT)
+
+Uses:
+
+User’s own API keys
+
+No shared DB, No shared API usage from owner
+
+🧱 FINAL SYSTEM ARCHITECTURE
+User Website
+ ↓
+Embeds Chat Widget JS
+ ↓
+Widget Calls User’s Render Chatbot Backend
+ ↓
+Backend Loads:
+   Rules
+   Knowledge JSON
+ ↓
+Backend Calls Grok API
+ ↓
+Returns Chat Response
+
+🧠 AI MODEL RESPONSIBILITY SPLIT
+🤖 Grok API (Primary Runtime Brain)
+
+Used for:
+
+Natural conversation
+
+Context reasoning
+
+Rule following
+
+Knowledge grounded answers
+
+Not used for:
+
+Knowledge generation
+
+Bulk summarization
+
+Dataset building
+
+🧪 Gemini API (Background Knowledge Processor)
+
+Used for:
+
+Knowledge expansion
+
+Knowledge structuring
+
+Multi-task processing in Single Prompt
+
+Converting raw info → structured knowledge JSON
+
+Must be designed so:
+👉 1 prompt = multiple outputs
+👉 Reduce daily API calls usage
+
+📂 REQUIRED PROJECT STRUCTURE
+project_root/
+
+app/
+ ├ main.py
+ ├ chat_api.py
+ ├ grok_client.py
+ ├ gemini_client.py
+ ├ knowledge_manager.py
+ ├ rule_engine.py
+ ├ prompt_builder.py
+
+widget/
+ ├ widget.js
+ ├ widget.css
+
+knowledge/
+ ├ core_knowledge.json
+ ├ expanded_knowledge.json
+
+rules/
+ ├ rules.txt
+
+.env.example
+requirements.txt
+README.md
+
+🌐 BACKEND REQUIREMENTS (FASTAPI — RENDER DEPLOYABLE)
+REQUIRED API ENDPOINTS
+POST /chat
+
+Input:
+
+message
+session_id
+
+
+Process:
+
+Load rules
+
+Load knowledge
+
+Build prompt
+
+Call Grok API
+
+Return response
+
+POST /expand-knowledge
+
+Input:
+
+raw_text
+source_tag
+
+
+Process:
+
+Send to Gemini (single heavy prompt)
+
+Receive structured knowledge JSON
+
+Append to expanded_knowledge.json
+
+📚 KNOWLEDGE SYSTEM DESIGN
+Core Knowledge
+
+Static, verified.
+
+Expanded Knowledge
+
+Gemini generated structured entries.
+
+Knowledge JSON ENTRY FORMAT
+{
+  "topic": "",
+  "symptoms_or_keywords": [],
+  "response_guidance": "",
+  "risk_level": "",
+  "confidence": "",
+  "source": ""
+}
+
+🧠 GEMINI SINGLE PROMPT STRATEGY
+
+Prompt must request:
+
+1️⃣ Extract structured knowledge
+2️⃣ Remove hallucinations
+3️⃣ Add confidence score
+4️⃣ Add risk level
+5️⃣ Output valid JSON
+
+Single API call → Full processing.
+
+🤖 GROK PROMPT STRATEGY
+
+Prompt must include:
+
+Rule file content
+
+Matched knowledge entries
+
+User message
+
+Medical disclaimer template
+
+🧩 JS CHAT WIDGET REQUIREMENTS
+Widget Must:
+
+✔ Create floating button (bottom right)
+✔ Open chat popup window
+✔ Send messages to backend
+✔ Maintain session
+✔ Be embeddable via single script tag
+
+EMBED METHOD (FINAL)
+
+User adds to website:
+
+<script src="https://their-domain/widget.js"></script>
+
+🖥 WIDGET UI BEHAVIOR
+Default State
+
+Floating circular button
+
+On Click
+
+Open chat window panel
+
+Chat Window
+
+Header
+
+Chat messages
+
+Input box
+
+Send button
+
+🔑 CONFIGURATION SYSTEM
+ENV VARIABLES (USER PROVIDED)
+GROK_API_KEY=
+GEMINI_API_KEY=
+LLM_PROVIDER=grok
+
+🧠 PROMPT BUILDING FLOW
+Chat Request
+Rules
++
+Top Knowledge Matches
++
+User Message
++
+Safety Template
+
+
+→ Send to Grok
+
+🔄 KNOWLEDGE EXPANSION FLOW
+User / Admin Adds Raw Info
+↓
+Backend Sends To Gemini
+↓
+Gemini Returns Structured JSON
+↓
+Append To Expanded Knowledge File
+
+🌐 DEPLOYMENT TARGET
+Required
+
+Must deploy on:
+👉 Render Free Tier
+
+Must Support
+
+Environment variables
+
+CORS for widget domain access
+
+🔐 SECURITY REQUIREMENTS
+
+Must implement:
+
+Rate limiting basic
+
+API key hidden server side
+
+Input sanitization
+
+🧪 PERFORMANCE TARGET
+
+Chat response < 5 sec (excluding cold start)
+
+Widget load < 1 sec
+
+🏆 FINAL PRODUCT CAPABILITY
+
+End user can:
+
+Deploy chatbot on their Render
+
+Plug their API keys
+
+Add knowledge
+
+Embed chatbot into ANY website using widget.js
+
+⭐ FINAL PRODUCT IDENTITY
+
+This is a Self-Hosted AI Chatbot Engine + Universal Web Widget Integration System using Grok for real-time reasoning and Gemini for structured knowledge expansion via single high-efficiency prompt processing.

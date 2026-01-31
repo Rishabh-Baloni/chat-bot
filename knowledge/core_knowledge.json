@@ -1,0 +1,18 @@
+[
+  {
+    "topic": "General Assistance",
+    "symptoms_or_keywords": ["help", "assistance", "support", "question"],
+    "response_guidance": "Provide helpful and accurate information. Ask clarifying questions if needed.",
+    "risk_level": "low",
+    "confidence": "0.9",
+    "source": "core"
+  },
+  {
+    "topic": "Health Information Disclaimer",
+    "symptoms_or_keywords": ["health", "medical", "symptoms", "diagnosis", "treatment"],
+    "response_guidance": "Always include medical disclaimer. Recommend consulting healthcare professionals. Provide general educational information only.",
+    "risk_level": "high",
+    "confidence": "1.0",
+    "source": "core"
+  }
+]
