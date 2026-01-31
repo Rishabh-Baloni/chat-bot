@@ -1,7 +1,7 @@
 [
   {
     "topic": "Fever and Body Aches",
-    "symptoms_or_keywords": ["fever", "body aches", "headache", "chills", "muscle pain"],
+    "symptoms_or_keywords": ["fever", "body aches", "headache", "chills", "muscle pain", "flu symptoms"],
     "response_guidance": "Based on these symptoms, viral infections or flu-like illnesses are more likely than others. If fever stays high for more than 2 days, you should consider seeing a doctor. Simple supportive steps that may help include rest, hydration, and monitoring temperature.",
     "risk_level": "medium",
     "confidence": "0.8",
@@ -9,15 +9,39 @@
   },
   {
     "topic": "Chest Pain Emergency",
-    "symptoms_or_keywords": ["chest pain", "chest pressure", "sweating", "shortness of breath", "heart pain"],
+    "symptoms_or_keywords": ["chest pain", "chest pressure", "sweating", "shortness of breath", "heart pain", "crushing chest pain"],
     "response_guidance": "These symptoms can sometimes be associated with serious heart-related conditions. You should seek emergency medical care immediately.",
     "risk_level": "critical",
     "confidence": "1.0",
     "source": "emergency_protocols"
   },
   {
+    "topic": "Severe Breathing Issues",
+    "symptoms_or_keywords": ["can't breathe", "difficulty breathing", "wheezing", "gasping", "blue lips", "choking"],
+    "response_guidance": "These symptoms can sometimes be associated with serious respiratory conditions. You should seek emergency medical care immediately.",
+    "risk_level": "critical",
+    "confidence": "1.0",
+    "source": "emergency_protocols"
+  },
+  {
+    "topic": "Severe Bleeding",
+    "symptoms_or_keywords": ["heavy bleeding", "won't stop bleeding", "blood loss", "severe cut", "hemorrhage"],
+    "response_guidance": "These symptoms can sometimes be associated with serious blood loss. You should seek emergency medical care immediately.",
+    "risk_level": "critical",
+    "confidence": "1.0",
+    "source": "emergency_protocols"
+  },
+  {
+    "topic": "Stroke Warning Signs",
+    "symptoms_or_keywords": ["sudden weakness", "face drooping", "slurred speech", "confusion", "sudden severe headache"],
+    "response_guidance": "These symptoms can sometimes be associated with serious neurological conditions like stroke. You should seek emergency medical care immediately.",
+    "risk_level": "critical",
+    "confidence": "1.0",
+    "source": "emergency_protocols"
+  },
+  {
     "topic": "Cough and Cold Symptoms",
-    "symptoms_or_keywords": ["cough", "runny nose", "sore throat", "congestion", "sneezing"],
+    "symptoms_or_keywords": ["cough", "runny nose", "sore throat", "congestion", "sneezing", "stuffy nose"],
     "response_guidance": "Your symptoms are commonly seen in conditions such as common cold or upper respiratory infections. This pattern sometimes appears in viral illnesses. Simple supportive steps that may help you feel better include rest, warm fluids, and throat lozenges.",
     "risk_level": "low",
     "confidence": "0.9",
@@ -25,42 +49,234 @@
   },
   {
     "topic": "Stomach Issues",
-    "symptoms_or_keywords": ["nausea", "vomiting", "stomach pain", "diarrhea", "upset stomach"],
+    "symptoms_or_keywords": ["nausea", "vomiting", "stomach pain", "diarrhea", "upset stomach", "abdominal pain"],
     "response_guidance": "Based on what you described, conditions like gastroenteritis or food-related illness are more likely than others. If symptoms persist for more than 24 hours or worsen, you should consider seeing a doctor. Supportive care like staying hydrated and bland foods may help.",
     "risk_level": "medium",
     "confidence": "0.7",
     "source": "symptom_patterns"
   },
   {
-    "topic": "Severe Breathing Issues",
-    "symptoms_or_keywords": ["can't breathe", "difficulty breathing", "wheezing", "gasping", "blue lips"],
-    "response_guidance": "These symptoms can sometimes be associated with serious respiratory conditions. You should seek emergency medical care immediately.",
-    "risk_level": "critical",
-    "confidence": "1.0",
-    "source": "emergency_protocols"
-  },
-  {
     "topic": "Headache Patterns",
-    "symptoms_or_keywords": ["headache", "migraine", "head pain", "pressure in head"],
+    "symptoms_or_keywords": ["headache", "migraine", "head pain", "pressure in head", "tension headache"],
     "response_guidance": "Your symptoms are commonly seen in conditions such as tension headaches or migraines. This pattern sometimes appears in stress-related or dehydration issues. Simple supportive steps include rest in a dark room, hydration, and avoiding triggers.",
     "risk_level": "low",
     "confidence": "0.8",
     "source": "symptom_patterns"
   },
   {
+    "topic": "Back Pain",
+    "symptoms_or_keywords": ["back pain", "lower back pain", "spine pain", "back ache", "sciatica"],
+    "response_guidance": "Based on what you described, conditions like muscle strain or mechanical back pain are more likely than others. This pattern sometimes appears in posture-related or activity-related issues. Simple supportive steps include rest, gentle movement, and heat/cold therapy.",
+    "risk_level": "low",
+    "confidence": "0.7",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Joint Pain",
+    "symptoms_or_keywords": ["joint pain", "knee pain", "shoulder pain", "arthritis", "stiff joints"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as arthritis or joint inflammation. This pattern sometimes appears in age-related or overuse conditions. If pain persists or limits daily activities, you should consider seeing a doctor.",
+    "risk_level": "medium",
+    "confidence": "0.6",
+    "source": "symptom_patterns"
+  },
+  {
     "topic": "Skin Rashes",
-    "symptoms_or_keywords": ["rash", "itchy skin", "red spots", "skin irritation", "hives"],
+    "symptoms_or_keywords": ["rash", "itchy skin", "red spots", "skin irritation", "hives", "eczema"],
     "response_guidance": "Based on what you described, conditions like allergic reactions or contact dermatitis are more likely than others. If rash spreads rapidly or you have difficulty breathing, seek immediate care. Otherwise, avoiding known irritants and cool compresses may help.",
     "risk_level": "medium",
     "confidence": "0.6",
     "source": "symptom_patterns"
   },
   {
-    "topic": "General Health Questions",
-    "symptoms_or_keywords": ["healthy", "wellness", "prevention", "general health"],
-    "response_guidance": "I can help you understand symptom patterns and when to seek care. For specific health concerns, only a clinical evaluation can provide personalized guidance. What symptoms or health patterns would you like to discuss?",
+    "topic": "Urinary Symptoms",
+    "symptoms_or_keywords": ["burning urination", "frequent urination", "UTI", "bladder pain", "painful urination"],
+    "response_guidance": "Based on these symptoms, conditions like urinary tract infections are more likely than others. If symptoms worsen or you develop fever, you should consider seeing a doctor. Simple supportive steps include increased fluid intake.",
+    "risk_level": "medium",
+    "confidence": "0.8",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Eye Problems",
+    "symptoms_or_keywords": ["eye pain", "blurred vision", "red eyes", "eye infection", "vision problems"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as eye infections or irritation. This pattern sometimes appears in allergic or infectious conditions. If vision changes persist or worsen, you should consider seeing a doctor.",
+    "risk_level": "medium",
+    "confidence": "0.7",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Ear Problems",
+    "symptoms_or_keywords": ["ear pain", "ear infection", "hearing loss", "ear discharge", "ringing ears"],
+    "response_guidance": "Based on what you described, conditions like ear infections or wax buildup are more likely than others. If pain is severe or you have hearing changes, you should consider seeing a doctor.",
+    "risk_level": "medium",
+    "confidence": "0.7",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Dental Pain",
+    "symptoms_or_keywords": ["tooth pain", "toothache", "dental pain", "gum pain", "jaw pain"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as dental infections or tooth decay. This pattern sometimes appears in dental health issues. You should consider seeing a dentist for proper evaluation.",
+    "risk_level": "medium",
+    "confidence": "0.8",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Sleep Issues",
+    "symptoms_or_keywords": ["insomnia", "can't sleep", "sleep problems", "tired", "fatigue"],
+    "response_guidance": "Based on what you described, conditions like sleep disorders or stress-related insomnia are more likely than others. This pattern sometimes appears in lifestyle or stress-related issues. Simple supportive steps include sleep hygiene and stress management.",
+    "risk_level": "low",
+    "confidence": "0.6",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Anxiety Symptoms",
+    "symptoms_or_keywords": ["anxiety", "panic", "worried", "nervous", "racing heart", "panic attack"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as anxiety disorders or stress responses. This pattern sometimes appears in mental health conditions. If symptoms interfere with daily life, you should consider speaking with a healthcare provider.",
+    "risk_level": "medium",
+    "confidence": "0.7",
+    "source": "mental_health_patterns"
+  },
+  {
+    "topic": "Depression Symptoms",
+    "symptoms_or_keywords": ["depression", "sad", "hopeless", "no energy", "mood changes"],
+    "response_guidance": "Based on what you described, conditions like depression or mood disorders are more likely than others. This pattern sometimes appears in mental health conditions. If feelings persist or worsen, you should consider speaking with a healthcare provider.",
+    "risk_level": "medium",
+    "confidence": "0.7",
+    "source": "mental_health_patterns"
+  },
+  {
+    "topic": "Diabetes Symptoms",
+    "symptoms_or_keywords": ["frequent urination", "excessive thirst", "blurred vision", "fatigue", "high blood sugar"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as diabetes or blood sugar issues. This pattern sometimes appears in metabolic conditions. You should consider seeing a doctor for proper blood sugar evaluation.",
+    "risk_level": "high",
+    "confidence": "0.8",
+    "source": "chronic_conditions"
+  },
+  {
+    "topic": "High Blood Pressure Symptoms",
+    "symptoms_or_keywords": ["high blood pressure", "hypertension", "dizziness", "headaches", "chest tightness"],
+    "response_guidance": "Based on these symptoms, conditions like hypertension are more likely than others. This pattern sometimes appears in cardiovascular conditions. You should consider having your blood pressure checked by a healthcare provider.",
+    "risk_level": "high",
+    "confidence": "0.7",
+    "source": "chronic_conditions"
+  },
+  {
+    "topic": "Allergic Reactions",
+    "symptoms_or_keywords": ["allergic reaction", "swelling", "itching", "hives", "food allergy"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as allergic reactions. If you have difficulty breathing or severe swelling, seek emergency care immediately. Otherwise, avoiding the trigger and antihistamines may help.",
+    "risk_level": "medium",
+    "confidence": "0.8",
+    "source": "allergy_patterns"
+  },
+  {
+    "topic": "Women's Health - Menstrual",
+    "symptoms_or_keywords": ["period pain", "menstrual cramps", "heavy periods", "irregular periods", "PMS"],
+    "response_guidance": "Based on what you described, conditions like menstrual disorders or hormonal changes are more likely than others. This pattern sometimes appears in reproductive health issues. If symptoms are severe or concerning, you should consider seeing a gynecologist.",
+    "risk_level": "medium",
+    "confidence": "0.7",
+    "source": "womens_health"
+  },
+  {
+    "topic": "Pregnancy Symptoms",
+    "symptoms_or_keywords": ["pregnancy", "morning sickness", "missed period", "pregnant", "nausea pregnancy"],
+    "response_guidance": "Your symptoms are commonly seen in early pregnancy. This pattern sometimes appears in hormonal changes during pregnancy. You should consider taking a pregnancy test and consulting with a healthcare provider for proper prenatal care.",
+    "risk_level": "low",
+    "confidence": "0.8",
+    "source": "womens_health"
+  },
+  {
+    "topic": "Child Fever",
+    "symptoms_or_keywords": ["child fever", "baby fever", "toddler fever", "kid sick", "infant temperature"],
+    "response_guidance": "Based on these symptoms in children, viral infections are more likely than others. For infants under 3 months with fever, you should seek immediate medical care. For older children, monitor closely and seek care if fever persists or child appears very unwell.",
+    "risk_level": "high",
+    "confidence": "0.9",
+    "source": "pediatric_patterns"
+  },
+  {
+    "topic": "Injury Assessment - Sprains",
+    "symptoms_or_keywords": ["sprain", "twisted ankle", "joint injury", "swollen joint", "can't move"],
+    "response_guidance": "Based on what you described, conditions like sprains or soft tissue injuries are more likely than others. This pattern sometimes appears in activity-related injuries. Simple supportive steps include rest, ice, compression, and elevation (RICE).",
+    "risk_level": "medium",
+    "confidence": "0.8",
+    "source": "injury_patterns"
+  },
+  {
+    "topic": "Cuts and Wounds",
+    "symptoms_or_keywords": ["cut", "wound", "bleeding", "laceration", "needs stitches"],
+    "response_guidance": "Your symptoms are commonly seen in minor injuries. If bleeding won't stop, wound is deep, or you can't clean it properly, you should consider seeking medical care. Otherwise, clean the wound and apply pressure to stop bleeding.",
+    "risk_level": "medium",
+    "confidence": "0.7",
+    "source": "injury_patterns"
+  },
+  {
+    "topic": "Burns",
+    "symptoms_or_keywords": ["burn", "burned skin", "scalded", "thermal injury", "chemical burn"],
+    "response_guidance": "Based on what you described, thermal or chemical injuries are more likely than others. For severe burns, large areas, or chemical burns, seek immediate medical care. For minor burns, cool water and proper wound care may help.",
+    "risk_level": "medium",
+    "confidence": "0.8",
+    "source": "injury_patterns"
+  },
+  {
+    "topic": "Medication Side Effects",
+    "symptoms_or_keywords": ["medication side effects", "drug reaction", "pill effects", "medicine problems"],
+    "response_guidance": "Your symptoms are commonly seen with medication reactions. This pattern sometimes appears with new medications or dosage changes. You should consider contacting your prescribing doctor or pharmacist about these symptoms.",
+    "risk_level": "medium",
+    "confidence": "0.6",
+    "source": "medication_patterns"
+  },
+  {
+    "topic": "Weight Changes",
+    "symptoms_or_keywords": ["weight loss", "weight gain", "appetite changes", "eating problems"],
+    "response_guidance": "Based on what you described, conditions like metabolic changes or underlying health issues are more likely than others. If weight changes are unexplained or rapid, you should consider seeing a healthcare provider for evaluation.",
+    "risk_level": "medium",
+    "confidence": "0.6",
+    "source": "metabolic_patterns"
+  },
+  {
+    "topic": "Dizziness and Balance",
+    "symptoms_or_keywords": ["dizziness", "vertigo", "balance problems", "lightheaded", "spinning sensation"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as inner ear problems or blood pressure changes. This pattern sometimes appears in vestibular or circulatory issues. If symptoms are severe or persistent, you should consider seeing a doctor.",
+    "risk_level": "medium",
+    "confidence": "0.7",
+    "source": "neurological_patterns"
+  },
+  {
+    "topic": "Memory and Cognitive Issues",
+    "symptoms_or_keywords": ["memory problems", "forgetfulness", "confusion", "cognitive issues", "brain fog"],
+    "response_guidance": "Based on what you described, conditions like stress-related cognitive changes or underlying health issues are more likely than others. If symptoms worsen or interfere with daily life, you should consider seeing a healthcare provider.",
+    "risk_level": "medium",
+    "confidence": "0.6",
+    "source": "neurological_patterns"
+  },
+  {
+    "topic": "Chronic Fatigue",
+    "symptoms_or_keywords": ["chronic fatigue", "always tired", "no energy", "exhausted", "weakness"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as chronic fatigue syndrome, thyroid issues, or other systemic conditions. This pattern sometimes appears in various underlying health issues. You should consider seeing a doctor for comprehensive evaluation.",
+    "risk_level": "medium",
+    "confidence": "0.6",
+    "source": "systemic_patterns"
+  },
+  {
+    "topic": "Preventive Care Questions",
+    "symptoms_or_keywords": ["checkup", "screening", "prevention", "health maintenance", "wellness exam"],
+    "response_guidance": "Preventive care is important for maintaining health. Regular checkups can help detect issues early. You should consider discussing appropriate screening schedules with your healthcare provider based on your age and risk factors.",
+    "risk_level": "low",
+    "confidence": "0.9",
+    "source": "preventive_care"
+  },
+  {
+    "topic": "General Health Inquiry",
+    "symptoms_or_keywords": ["health", "doubt", "question", "concern", "help", "ask"],
+    "response_guidance": "I'm here to help you understand health symptoms and patterns. What specific symptoms or health concerns are you experiencing? I can discuss what conditions are commonly associated with different symptom patterns.",
     "risk_level": "low",
     "confidence": "0.9",
     "source": "general_guidance"
+  },
+  {
+    "topic": "Casual Greetings",
+    "symptoms_or_keywords": ["hi", "hello", "hey", "lala", "wassup", "greetings"],
+    "response_guidance": "Hello! I'm an AI-Doctor assistant. I can help you understand symptom patterns and when to seek medical care. What health symptoms or concerns would you like to discuss?",
+    "risk_level": "low",
+    "confidence": "1.0",
+    "source": "interaction_guidance"
   }
 ]
