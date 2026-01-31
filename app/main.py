@@ -97,16 +97,18 @@ def determine_next_stage(current_stage, message, context):
         return "emergency_conclusion"
     
     # Handle confusion - if user says "what?" they need clarification, not new conversation
-    if message_lower.strip() in ["what", "what?", "huh", "huh?"] and len(context.split('\n')) > 1:
+    confusion_words = ["what", "what?", "huh", "huh?", "confused", "don't understand"]
+    if any(word in message_lower for word in confusion_words) and len(context.split('\n')) > 1:
         return "conclusion"  # Provide summary instead of resetting
     
     # User wants conclusion - detect frustration or request for advice
     conclusion_signals = [
-        len(message.strip()) <= 3 and message_lower not in ["what", "what?", "huh", "huh?"],  # Short answers but not confusion
         "what" in message_lower and ("do" in message_lower or "should" in message_lower),
         "help" in message_lower and len(message.split()) <= 3,
         "advice" in message_lower,
         "recommend" in message_lower,
+        "serious" in message_lower and "fix" in message_lower,
+        "joking" in message_lower,
         message_lower in ["nothing", "no", "nah", "nahhhh", "none"]
     ]
     
