@@ -109,7 +109,7 @@
         document.body.insertAdjacentHTML('beforeend', widgetHTML);
     }
     
-    // Add message to chat
+    // Add message to chat with proper HTML decoding
     function addMessage(message, isUser = false, isError = false, isSystem = false) {
         const messagesContainer = document.getElementById('chat-messages');
         const messageDiv = document.createElement('div');
@@ -126,7 +126,21 @@
         }
         
         messageDiv.className = className;
-        messageDiv.textContent = sanitizeInput(message);
+        
+        // For bot messages, decode HTML entities and display as HTML
+        if (!isUser) {
+            // Decode common HTML entities
+            message = message.replace(/&amp;#x27;/g, "'");
+            message = message.replace(/&amp;/g, '&');
+            message = message.replace(/&lt;/g, '<');
+            message = message.replace(/&gt;/g, '>');
+            message = message.replace(/&quot;/g, '"');
+            messageDiv.innerHTML = message;
+        } else {
+            // For user messages, use textContent for security
+            messageDiv.textContent = message;
+        }
+        
         messagesContainer.appendChild(messageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }

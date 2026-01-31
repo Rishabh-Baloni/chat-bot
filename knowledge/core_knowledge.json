@@ -50,7 +50,7 @@
   {
     "topic": "Stomach Issues",
     "symptoms_or_keywords": ["nausea", "vomiting", "stomach pain", "diarrhea", "upset stomach", "abdominal pain"],
-    "response_guidance": "Based on what you described, conditions like gastroenteritis or food-related illness are more likely than others. If symptoms persist for more than 24 hours or worsen, you should consider seeing a doctor. Supportive care like staying hydrated and bland foods may help.",
+    "response_guidance": "Stomach issues can be from many things - what you ate, stress, or a bug. Where exactly does it hurt? Any nausea or changes in bowel movements?",,
     "risk_level": "medium",
     "confidence": "0.7",
     "source": "symptom_patterns"
@@ -58,7 +58,7 @@
   {
     "topic": "Headache Patterns",
     "symptoms_or_keywords": ["headache", "migraine", "head pain", "pressure in head", "tension headache"],
-    "response_guidance": "Your symptoms are commonly seen in conditions such as tension headaches or migraines. This pattern sometimes appears in stress-related or dehydration issues. Simple supportive steps include rest in a dark room, hydration, and avoiding triggers.",
+    "response_guidance": "Headaches can have many causes - stress, dehydration, tension. How severe is it on a scale of 1-10? Any nausea or sensitivity to light?",
     "risk_level": "low",
     "confidence": "0.8",
     "source": "symptom_patterns"
@@ -130,7 +130,7 @@
   {
     "topic": "Anxiety Symptoms",
     "symptoms_or_keywords": ["anxiety", "panic", "worried", "nervous", "racing heart", "panic attack"],
-    "response_guidance": "Your symptoms are commonly seen in conditions such as anxiety disorders or stress responses. This pattern sometimes appears in mental health conditions. If symptoms interfere with daily life, you should consider speaking with a healthcare provider.",
+    "response_guidance": "Feeling anxious or scared can be really tough. Is this a new feeling for you, or something you've experienced before? Any physical symptoms like racing heart or trouble breathing?",
     "risk_level": "medium",
     "confidence": "0.7",
     "source": "mental_health_patterns"
@@ -266,15 +266,23 @@
   {
     "topic": "General Health Inquiry",
     "symptoms_or_keywords": ["health", "doubt", "question", "concern", "help", "ask"],
-    "response_guidance": "I'm here to help you understand health symptoms and patterns. What specific symptoms or health concerns are you experiencing? I can discuss what conditions are commonly associated with different symptom patterns.",
+    "response_guidance": "I'm here to help with your health questions. What specific symptoms are you experiencing? The more details you share, the better I can assist.",
     "risk_level": "low",
     "confidence": "0.9",
     "source": "general_guidance"
   },
   {
+    "topic": "Headache with Stomach Pain",
+    "symptoms_or_keywords": ["headache and stomach", "head hurts stomach hurts", "nausea headache", "stomach pain headache"],
+    "response_guidance": "Headache with stomach pain could be stress, a viral bug, or something you ate. How long have you had both symptoms? Any fever or other issues?",
+    "risk_level": "medium",
+    "confidence": "0.8",
+    "source": "symptom_combinations"
+  },
+  {
     "topic": "Casual Greetings",
-    "symptoms_or_keywords": ["hi", "hello", "hey", "lala", "wassup", "greetings"],
-    "response_guidance": "Hello! I'm an AI-Doctor assistant. I can help you understand symptom patterns and when to seek medical care. What health symptoms or concerns would you like to discuss?",
+    "symptoms_or_keywords": ["hi", "hello", "hey", "lala", "wassup", "greetings", "scared", "feeling scared"],
+    "response_guidance": "Hello! I'm here to help with any health questions you might have. What's going on?",
     "risk_level": "low",
     "confidence": "1.0",
     "source": "interaction_guidance"
