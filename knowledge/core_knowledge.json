@@ -1,18 +1,66 @@
 [
   {
-    "topic": "General Assistance",
-    "symptoms_or_keywords": ["help", "assistance", "support", "question"],
-    "response_guidance": "Provide helpful and accurate information. Ask clarifying questions if needed.",
-    "risk_level": "low",
-    "confidence": "0.9",
-    "source": "core"
+    "topic": "Fever and Body Aches",
+    "symptoms_or_keywords": ["fever", "body aches", "headache", "chills", "muscle pain"],
+    "response_guidance": "Based on these symptoms, viral infections or flu-like illnesses are more likely than others. If fever stays high for more than 2 days, you should consider seeing a doctor. Simple supportive steps that may help include rest, hydration, and monitoring temperature.",
+    "risk_level": "medium",
+    "confidence": "0.8",
+    "source": "symptom_patterns"
   },
   {
-    "topic": "Health Information Disclaimer",
-    "symptoms_or_keywords": ["health", "medical", "symptoms", "diagnosis", "treatment"],
-    "response_guidance": "Always include medical disclaimer. Recommend consulting healthcare professionals. Provide general educational information only.",
-    "risk_level": "high",
+    "topic": "Chest Pain Emergency",
+    "symptoms_or_keywords": ["chest pain", "chest pressure", "sweating", "shortness of breath", "heart pain"],
+    "response_guidance": "These symptoms can sometimes be associated with serious heart-related conditions. You should seek emergency medical care immediately.",
+    "risk_level": "critical",
     "confidence": "1.0",
-    "source": "core"
+    "source": "emergency_protocols"
+  },
+  {
+    "topic": "Cough and Cold Symptoms",
+    "symptoms_or_keywords": ["cough", "runny nose", "sore throat", "congestion", "sneezing"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as common cold or upper respiratory infections. This pattern sometimes appears in viral illnesses. Simple supportive steps that may help you feel better include rest, warm fluids, and throat lozenges.",
+    "risk_level": "low",
+    "confidence": "0.9",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Stomach Issues",
+    "symptoms_or_keywords": ["nausea", "vomiting", "stomach pain", "diarrhea", "upset stomach"],
+    "response_guidance": "Based on what you described, conditions like gastroenteritis or food-related illness are more likely than others. If symptoms persist for more than 24 hours or worsen, you should consider seeing a doctor. Supportive care like staying hydrated and bland foods may help.",
+    "risk_level": "medium",
+    "confidence": "0.7",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Severe Breathing Issues",
+    "symptoms_or_keywords": ["can't breathe", "difficulty breathing", "wheezing", "gasping", "blue lips"],
+    "response_guidance": "These symptoms can sometimes be associated with serious respiratory conditions. You should seek emergency medical care immediately.",
+    "risk_level": "critical",
+    "confidence": "1.0",
+    "source": "emergency_protocols"
+  },
+  {
+    "topic": "Headache Patterns",
+    "symptoms_or_keywords": ["headache", "migraine", "head pain", "pressure in head"],
+    "response_guidance": "Your symptoms are commonly seen in conditions such as tension headaches or migraines. This pattern sometimes appears in stress-related or dehydration issues. Simple supportive steps include rest in a dark room, hydration, and avoiding triggers.",
+    "risk_level": "low",
+    "confidence": "0.8",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "Skin Rashes",
+    "symptoms_or_keywords": ["rash", "itchy skin", "red spots", "skin irritation", "hives"],
+    "response_guidance": "Based on what you described, conditions like allergic reactions or contact dermatitis are more likely than others. If rash spreads rapidly or you have difficulty breathing, seek immediate care. Otherwise, avoiding known irritants and cool compresses may help.",
+    "risk_level": "medium",
+    "confidence": "0.6",
+    "source": "symptom_patterns"
+  },
+  {
+    "topic": "General Health Questions",
+    "symptoms_or_keywords": ["healthy", "wellness", "prevention", "general health"],
+    "response_guidance": "I can help you understand symptom patterns and when to seek care. For specific health concerns, only a clinical evaluation can provide personalized guidance. What symptoms or health patterns would you like to discuss?",
+    "risk_level": "low",
+    "confidence": "0.9",
+    "source": "general_guidance"
   }
 ]

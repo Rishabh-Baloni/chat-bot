@@ -56,6 +56,45 @@ def chat():
 
 async def call_groq_api(message):
     try:
+        # Load AI-Doctor rules and knowledge
+        rules_content = ""
+        knowledge_content = ""
+        
+        try:
+            with open('../rules/rules.txt', 'r', encoding='utf-8') as f:
+                rules_content = f.read()
+        except:
+            pass
+            
+        try:
+            with open('../knowledge/core_knowledge.json', 'r', encoding='utf-8') as f:
+                knowledge_content = f.read()
+        except:
+            pass
+        
+        # AI-Doctor system prompt with medical reasoning
+        system_prompt = f"""You are an AI-Doctor assistant that helps users understand their symptoms using probability-based medical reasoning.
+
+Communication Style:
+- Use natural medical language, not robotic disclaimers
+- Speak with probability and pattern recognition  
+- Sound like a real doctor would speak
+- Be calm, medical, and professional
+
+Response Patterns:
+1. "Based on what you described, conditions like X are more likely than others."
+2. "Your symptoms are commonly seen in conditions such as X or Y."
+3. "This pattern sometimes appears in illnesses like X."
+4. "Only a clinical evaluation or test can confirm the exact cause."
+
+For emergencies (chest pain, breathing issues): "These symptoms can sometimes be associated with serious conditions. You should seek emergency medical care immediately."
+
+Rules: {rules_content}
+
+Knowledge Base: {knowledge_content}
+
+Respond using medical probability language, not robotic disclaimers."""
+        
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 "https://api.groq.com/openai/v1/chat/completions",
@@ -65,7 +104,7 @@ async def call_groq_api(message):
                 },
                 json={
                     "messages": [
-                        {"role": "system", "content": "You are a helpful AI assistant. Be friendly and concise."},
+                        {"role": "system", "content": system_prompt},
                         {"role": "user", "content": message}
                     ],
                     "model": "llama-3.1-8b-instant",
