@@ -96,9 +96,13 @@ def determine_next_stage(current_stage, message, context):
     if any(keyword in message_lower for keyword in emergency_keywords):
         return "emergency_conclusion"
     
+    # Handle confusion - if user says "what?" they need clarification, not new conversation
+    if message_lower.strip() in ["what", "what?", "huh", "huh?"] and len(context.split('\n')) > 1:
+        return "conclusion"  # Provide summary instead of resetting
+    
     # User wants conclusion - detect frustration or request for advice
     conclusion_signals = [
-        len(message.strip()) <= 3,  # Short answers like "no", "yes", "8"
+        len(message.strip()) <= 3 and message_lower not in ["what", "what?", "huh", "huh?"],  # Short answers but not confusion
         "what" in message_lower and ("do" in message_lower or "should" in message_lower),
         "help" in message_lower and len(message.split()) <= 3,
         "advice" in message_lower,
@@ -233,7 +237,7 @@ Provide:
                     ],
                     "model": "llama-3.1-8b-instant",
                     "temperature": 0.7,
-                    "max_tokens": 100
+                    "max_tokens": 200
                 },
                 timeout=30
             )
