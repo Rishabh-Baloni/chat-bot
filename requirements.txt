@@ -1,6 +1,6 @@
-fastapi==0.100.1
-uvicorn[standard]==0.23.2
+fastapi==0.95.2
+uvicorn[standard]==0.22.0
 httpx==0.24.1
-pydantic==1.10.12
+pydantic==1.10.7
 python-multipart==0.0.6
-slowapi==0.1.9
+slowapi==0.1.8
