@@ -14,6 +14,9 @@ CORS(app)
 GROK_API_KEY = os.getenv("GROK_API_KEY")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+# Simple conversation memory
+conversations = {}
+
 @app.route('/')
 def root():
     return {"message": "Chatbot Engine Running", "widget_url": "/widget/widget.js"}
@@ -38,8 +41,25 @@ def chat():
         if not message:
             return jsonify({"error": "Message required"}), 400
         
+        # Get conversation history
+        if session_id not in conversations:
+            conversations[session_id] = []
+        
+        # Add user message to history
+        conversations[session_id].append(f"User: {message}")
+        
+        # Keep only last 6 messages for context
+        if len(conversations[session_id]) > 6:
+            conversations[session_id] = conversations[session_id][-6:]
+        
+        # Build context from conversation history
+        conversation_context = "\n".join(conversations[session_id][-6:])
+        
         # Simple chat response using httpx
-        response = asyncio.run(call_groq_api(message))
+        response = asyncio.run(call_groq_api(message, conversation_context))
+        
+        # Add bot response to conversation history
+        conversations[session_id].append(f"Assistant: {response}")
         
         return jsonify({
             "response": response,
@@ -54,7 +74,7 @@ def chat():
             "version": "1.0.0"
         })
 
-async def call_groq_api(message):
+async def call_groq_api(message, conversation_context=""):
     try:
         # Load AI-Doctor rules and knowledge (but don't send to API to avoid rate limits)
         rules_content = ""
@@ -73,25 +93,23 @@ async def call_groq_api(message):
             pass
         
         # Enhanced conversational system prompt with memory
-        system_prompt = """You are a helpful AI health assistant. Be conversational, remember what the user told you, and ask specific follow-up questions.
+        system_prompt = f"""You are a helpful AI health assistant. Remember the conversation context and provide medical advice when appropriate.
+
+Conversation so far:
+{conversation_context}
 
 Key rules:
+- Remember what the user told you previously
+- For chronic symptoms (2+ weeks), recommend seeing a doctor
+- For food triggers, suggest avoiding the trigger
+- Provide specific advice, not just questions
 - Keep responses under 2 sentences
-- Remember previous symptoms mentioned
-- Ask ONE specific follow-up question
-- Use simple, empathetic language
-- For serious symptoms, suggest seeing a doctor
-- Never repeat questions already asked
+- If you have enough info, give recommendations
 
-For headaches, ask about:
-- Duration, triggers, severity, location, associated symptoms
-
-Response examples:
-- "That sounds uncomfortable. How long have you had this headache?"
-- "Forehead pain can be tension or sinus related. Any stuffy nose or stress lately?"
-- "Sharp pain that comes and goes could be tension. Have you been stressed or dehydrated?"
-
-Always acknowledge what they've already told you."""
+For headaches lasting 2+ weeks with known triggers:
+- Recommend avoiding the trigger (like onions)
+- Suggest seeing a doctor for evaluation
+- Mention keeping a headache diary"""
         
         async with httpx.AsyncClient() as client:
             response = await client.post(
