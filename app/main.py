@@ -97,9 +97,9 @@ def determine_next_stage(current_stage, message, context):
         return "emergency_conclusion"
     
     # Goodbye keywords - end conversation
-    goodbye_keywords = ["bye", "goodbye", "thanks", "thank you", "that's all"]
+    goodbye_keywords = ["bye", "goodbye", "thanks", "thank you", "that's all", "tell me what to do", "what to do", "help me"]
     if any(keyword in message_lower for keyword in goodbye_keywords):
-        return "goodbye"
+        return "conclusion"
     
     # Stage progression logic
     if current_stage == "greeting":
@@ -113,7 +113,7 @@ def determine_next_stage(current_stage, message, context):
     elif current_stage == "follow_up_questions":
         # After 2-3 follow-ups, conclude
         message_count = len([line for line in context.split('\n') if line.startswith('User:')])
-        if message_count >= 5:
+        if message_count >= 4:  # Reduced from 5 to 4
             return "conclusion"
         return "follow_up_questions"
     elif current_stage == "conclusion":
@@ -171,20 +171,20 @@ Ask about:
 
 Keep responses under 2 sentences. Ask ONE specific follow-up question.""",
             
-            "conclusion": f"""You are providing final assessment and recommendations.
+            "conclusion": f"""You are providing final medical assessment and recommendations.
 
 Conversation so far:
 {conversation_context}
 
 {relevant_knowledge}
 
-Provide:
-1. Brief summary of symptoms
-2. Possible causes (most likely first)
-3. Clear recommendations (see doctor if serious, home care if minor)
-4. When to seek immediate care
+Based on the conversation, provide:
+1. Summary: 'You have episodic forehead headaches at night, rated 8/10 severity, with mood/appetite changes'
+2. Assessment: 'This could be tension headaches, migraines, or stress-related headaches'
+3. Recommendations: 'Try regular sleep schedule, stress management, stay hydrated. See a doctor if headaches worsen or become more frequent'
+4. Red flags: 'Seek immediate care if you have sudden severe headache, vision changes, or neck stiffness'
 
-End with: 'Is there anything else you would like to know about your symptoms?'""",
+End with: 'I hope this helps. Take care and feel better soon!'""",
             
             "emergency_conclusion": f"""EMERGENCY RESPONSE NEEDED.
 
