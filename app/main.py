@@ -100,6 +100,11 @@ def determine_next_stage(current_stage, message, context):
     if any(keyword in message_lower for keyword in emergency_keywords):
         return "emergency_conclusion"
     
+    # Prioritize treatment requests - if user asks for treatment, give it immediately
+    treatment_keywords = ["treatment", "cure", "medicine", "remedy", "what should i do", "how to treat", "how to fix", "tell me the treatment"]
+    if any(keyword in message_lower for keyword in treatment_keywords):
+        return "conclusion"
+    
     # Handle confusion - if user says "what?" they need clarification, not new conversation
     confusion_words = ["what", "what?", "huh", "huh?", "confused", "don't understand"]
     if any(word in message_lower for word in confusion_words) and len(context.split('\n')) > 1:

@@ -8,6 +8,14 @@
     "source": "symptom_patterns"
   },
   {
+    "topic": "Fall-Related Elbow Pain and Numbness",
+    "symptoms_or_keywords": ["elbow pain", "numbness", "fall", "swelling", "repetitive motions"],
+    "response_guidance": "Treatment options include rest, ice application, compression, elevation (RICE), avoiding repetitive motions, over-the-counter pain relievers, and physical therapy if symptoms persist. Seek medical care for persistent numbness or decreased range of motion.",
+    "risk_level": "medium",
+    "confidence": "0.9",
+    "source": "orthopedic_guidelines"
+  },
+  {
     "topic": "Chest Pain Emergency",
     "symptoms_or_keywords": ["chest pain", "chest pressure", "sweating", "shortness of breath", "heart pain", "crushing chest pain"],
     "response_guidance": "These symptoms can sometimes be associated with serious heart-related conditions. You should seek emergency medical care immediately.",
