@@ -104,7 +104,13 @@
 
     <script>
         // 🚨 REPLACE THIS WITH YOUR ACTUAL RENDER URL
-        const API_URL = 'https://YOUR_APP_NAME.onrender.com';
+        // For local testing, use: http://localhost:10000
+        const API_URL = 'http://localhost:10000';
+        
+        // Configure widget to use the same API URL
+        window.ChatbotConfig = {
+            apiBaseUrl: API_URL
+        };
         
         async function testAPI() {
             const resultDiv = document.getElementById('api-result');
@@ -152,6 +158,6 @@
     </script>
     
     <!-- 🚨 REPLACE YOUR_APP_NAME WITH YOUR ACTUAL RENDER APP NAME -->
-    <script src="https://YOUR_APP_NAME.onrender.com/widget/widget.js"></script>
+    <script src="http://localhost:10000/widget/widget.js"></script>
 </body>
 </html>

@@ -8,8 +8,11 @@ import uuid
 import time
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"), override=False)
-load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"), override=False)
+# Robust path handling for .env loading
+basedir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(basedir)
+load_dotenv(dotenv_path=os.path.join(parent_dir, ".env"), override=False)
+load_dotenv(dotenv_path=os.path.join(basedir, ".env"), override=False)
 
 app = Flask(__name__)
 CORS(app)
@@ -68,7 +71,7 @@ def chat():
         conversation_stages[session_id] = next_stage
         
         # Simple chat response using httpx
-        response = asyncio.run(call_groq_api(message, conversation_context, current_stage, next_stage))
+        response = call_groq_api(message, conversation_context, current_stage, next_stage)
         
         # Add bot response to conversation history
         conversations[session_id].append(f"Assistant: {response}")
@@ -85,8 +88,9 @@ def chat():
         })
         
     except Exception as e:
+        print(f"Chat Endpoint Error: {str(e)}") # Log to console
         return jsonify({
-            "response": "I'm experiencing technical difficulties. Please try again.",
+            "response": f"I'm experiencing technical difficulties. Please try again. Error: {str(e)}",
             "session_id": session_id,
             "version": "1.0.0"
         })
@@ -151,7 +155,7 @@ def determine_next_stage(current_stage, message, context):
     else:
         return "greeting"
 
-async def call_groq_api(message, conversation_context="", current_stage="greeting", next_stage="symptom_gathering"):
+def call_groq_api(message, conversation_context="", current_stage="greeting", next_stage="symptom_gathering"):
     try:
         # Load and use knowledge base
         relevant_knowledge = ""
@@ -234,8 +238,8 @@ Provide:
         
         system_prompt = stage_prompts.get(current_stage, stage_prompts["greeting"])
         
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
+        with httpx.Client() as client:
+            response = client.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers={
                     "Authorization": f"Bearer {GROK_API_KEY}",

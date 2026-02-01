@@ -21,6 +21,11 @@
     
     // Merge user config with defaults
     const WIDGET_CONFIG = { ...DEFAULT_CONFIG, ...window.ChatbotConfig };
+
+    // Remove trailing slash from apiBaseUrl if present
+    if (WIDGET_CONFIG.apiBaseUrl.endsWith('/')) {
+        WIDGET_CONFIG.apiBaseUrl = WIDGET_CONFIG.apiBaseUrl.slice(0, -1);
+    }
     
     let sessionId = null;
     let isOpen = false;
