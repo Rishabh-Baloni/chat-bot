@@ -132,16 +132,28 @@
         
         messageDiv.className = className;
         
-        // For bot messages, decode HTML entities properly
+        // For bot messages, decode HTML entities properly and parse markdown
         if (!isUser) {
-            // Simple but effective HTML entity decoding
-            message = message.replace(/&#39;/g, "'");
-            message = message.replace(/&#x27;/g, "'");
-            message = message.replace(/&amp;/g, '&');
-            message = message.replace(/&lt;/g, '<');
-            message = message.replace(/&gt;/g, '>');
-            message = message.replace(/&quot;/g, '"');
-            messageDiv.textContent = message;
+            // Parse Markdown-like syntax
+            let html = message
+                // Escape HTML tags first
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;")
+                // Bold: **text**
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                // List items: * text (at start of line)
+                .replace(/^\* /gm, '• ')
+                // Headers: ### text (H3)
+                .replace(/^### (.*$)/gm, '<strong>$1</strong>')
+                // Headers: ## text (H2)
+                .replace(/^## (.*$)/gm, '<strong>$1</strong>')
+                // Newlines
+                .replace(/\n/g, '<br>');
+                
+            messageDiv.innerHTML = html;
         } else {
             // For user messages, use textContent for security
             messageDiv.textContent = message;
@@ -252,6 +264,14 @@
             chatButton.style.display = 'flex';
         }
     }
+    
+    // Close chat when clicking outside
+    document.addEventListener('click', function(event) {
+        const widget = document.getElementById('chatbot-widget');
+        if (isOpen && widget && !widget.contains(event.target)) {
+            toggleChat();
+        }
+    });
     
     // Handle message sending with queue
     async function handleSendMessage() {

@@ -59,15 +59,22 @@ def chat():
         # Add user message to history
         conversations[session_id].append(f"User: {message}")
         
-        # Keep only last 6 messages for context
-        if len(conversations[session_id]) > 6:
-            conversations[session_id] = conversations[session_id][-6:]
-        
-        # Build context from conversation history
-        conversation_context = "\n".join(conversations[session_id][-6:])
+        # Build context from conversation history (use full history for better context)
+        conversation_context = "\n".join(conversations[session_id])
         
         # Determine next stage based on current stage and user input
-        next_stage = determine_next_stage(current_stage, message, conversation_context)
+        total_user_messages = len([msg for msg in conversations[session_id] if msg.startswith("User:")])
+        next_stage = determine_next_stage(current_stage, message, conversation_context, total_user_messages)
+        
+        # Handle Session Reset
+        if next_stage == "greeting" and (current_stage == "conclusion" or current_stage == "goodbye"):
+            # Archive old conversation or just clear it
+            conversations[session_id] = [f"User: {message}"] # Keep just the new greeting
+            conversation_context = f"User: {message}" # Reset context for the API call
+            
+            # Important: Ensure we don't accidentally pull in old relevant knowledge
+            # (Though call_groq_api re-evaluates relevant_knowledge based on current message anyway)
+            
         conversation_stages[session_id] = next_stage
         
         # Simple chat response using httpx
@@ -95,14 +102,29 @@ def chat():
             "version": "1.0.0"
         })
 
-def determine_next_stage(current_stage, message, context):
+def determine_next_stage(current_stage, message, context, user_message_count):
     """Determine conversation flow stage using smart logic"""
-    message_lower = message.lower()
+    message_lower = message.lower().strip().strip('.,!?')
     
     # Emergency keywords - skip to conclusion
     emergency_keywords = ["chest pain", "can't breathe", "severe bleeding", "emergency"]
     if any(keyword in message_lower for keyword in emergency_keywords):
         return "emergency_conclusion"
+    
+    # Restart detection - if user greets again after conclusion/goodbye, reset
+    # Check for restart BEFORE length checks to allow resetting long conversations
+    restart_keywords = ["hi", "hello", "hey", "start over", "restart", "new chat", "greetings"]
+    
+    if current_stage == "conclusion" or current_stage == "goodbye":
+        is_restart = False
+        for keyword in restart_keywords:
+             # Check if keyword is exactly the message OR keyword is in the message words
+             if keyword == message_lower or keyword in message_lower.split():
+                 is_restart = True
+                 break
+        
+        if is_restart:
+            return "greeting"
     
     # Prioritize treatment requests - if user asks for treatment, give it immediately
     treatment_keywords = ["treatment", "cure", "medicine", "remedy", "what should i do", "how to treat", "how to fix", "tell me the treatment"]
@@ -122,21 +144,19 @@ def determine_next_stage(current_stage, message, context):
         "recommend" in message_lower,
         "serious" in message_lower and "fix" in message_lower,
         "joking" in message_lower,
-        message_lower in ["nothing", "no", "nah", "nahhhh", "none"]
+        message_lower in ["nothing", "no", "nah", "nahhhh", "none", "ok", "okay", "fine"]
     ]
     
-    # Count user messages to determine conversation length
-    user_message_count = len([line for line in context.split('\n') if line.startswith('User:')])
-    
     # Force conclusion if user seems frustrated or conversation is long
-    if any(conclusion_signals) or user_message_count >= 4:
+    # Only force conclusion if we are not already in conclusion or goodbye stages
+    if (any(conclusion_signals) or user_message_count >= 5) and current_stage not in ["conclusion", "goodbye"]:
         return "conclusion"
     
     # Goodbye detection
     goodbye_keywords = ["bye", "goodbye", "thanks", "thank you", "that's all"]
     if any(keyword in message_lower for keyword in goodbye_keywords):
         return "goodbye"
-    
+
     # Smart stage progression based on information gathered
     if current_stage == "greeting":
         return "symptom_gathering"
@@ -212,13 +232,13 @@ Conversation so far:
 
 {relevant_knowledge}
 
-Analyze the conversation and provide:
-1. Summary of key symptoms mentioned
-2. Most likely causes based on symptoms
-3. Specific actionable recommendations
-4. When to seek medical care
+Analyze the conversation and provide a structured response using Markdown:
+1. **Summary of Key Symptoms**: Briefly list the symptoms mentioned.
+2. **Most Likely Causes**: Based on the symptoms, list potential causes.
+3. **Actionable Recommendations**: Provide specific advice.
+4. **When to Seek Medical Care**: Clear warning signs.
 
-Be concise and helpful. End with a caring message.""",
+Format your response with clear headings (e.g., ## Summary) and bullet points. Be concise but complete. End with a caring message.""",
             
             "emergency_conclusion": f"""EMERGENCY RESPONSE NEEDED.
 
@@ -236,7 +256,7 @@ Provide:
             "goodbye": "Thank the user for using the health assistant. Wish them well and remind them to seek professional medical care for serious concerns. Keep it brief and caring."
         }
         
-        system_prompt = stage_prompts.get(current_stage, stage_prompts["greeting"])
+        system_prompt = stage_prompts.get(next_stage, stage_prompts["greeting"])
         
         with httpx.Client() as client:
             response = client.post(
@@ -252,7 +272,7 @@ Provide:
                     ],
                     "model": "llama-3.1-8b-instant",
                     "temperature": 0.7,
-                    "max_tokens": 200
+                    "max_tokens": 1000
                 },
                 timeout=30
             )
