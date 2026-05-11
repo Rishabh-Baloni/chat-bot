@@ -7,8 +7,8 @@
     const DEFAULT_CONFIG = {
         apiBaseUrl: window.location.origin,
         buttonText: '💬',
-        headerText: 'AI Assistant',
-        placeholder: 'Type your message...',
+        headerText: 'FitGuide',
+        placeholder: 'Ask FitGuide anything...',
         sendButtonText: 'Send',
         maxMessageLength: 2000,
         rateLimitDelay: 1000,
@@ -342,7 +342,7 @@
         
         // Welcome message
         setTimeout(() => {
-            addMessage('Hello! How can I help you today?', false);
+            addMessage("Hi! I'm FitGuide. Tell me your fitness level and main goal, and I'll point you to the right place in the app.", false);
         }, 500);
     }
     
