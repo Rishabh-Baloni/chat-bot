@@ -1,70 +1,86 @@
-import urllib.request
-import json
-import uuid
-import sys
+"""Smoke test for the FitGuide chat endpoint.
 
-def send_chat(message, session_id):
-    url = "http://localhost:10000/chat"
-    data = {"message": message, "session_id": session_id}
+Run the server first (`cd app && python main.py`) and then run this script.
+It walks through a normal greeting -> chatting -> goodbye flow, then verifies
+that a restart greeting resets the session.
+"""
+
+import json
+import sys
+import urllib.error
+import urllib.request
+import uuid
+
+API_URL = "http://localhost:8000/chat"
+
+
+def send_chat(message: str, session_id: str) -> dict:
+    payload = json.dumps({"message": message, "session_id": session_id}).encode("utf-8")
     req = urllib.request.Request(
-        url, 
-        data=json.dumps(data).encode('utf-8'),
-        headers={'Content-Type': 'application/json'}
+        API_URL,
+        data=payload,
+        headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(req) as resp:
-            return json.loads(resp.read().decode('utf-8'))
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except urllib.error.URLError as e:
+        print(f"Network error: {e}")
+        return {"stage": "error", "response": str(e)}
     except Exception as e:
         print(f"Error: {e}")
         return {"stage": "error", "response": str(e)}
 
-def test_loop_bug():
-    session_id = str(uuid.uuid4())
-    print(f"Starting Session: {session_id}")
-    
-    # 1. Start Chat
-    resp = send_chat("hello", session_id)
-    print(f"1. Greeting: {resp['stage']}")
-    
-    # 2-6. Spam messages to increase count to >= 5
-    for i in range(5):
-        resp = send_chat(f"symptom {i}", session_id)
-        print(f"Msg {i+2}. Stage: {resp['stage']}")
-        
-    # Now we should be in 'conclusion' (or close to it) because of count >= 5
-    # Let's force conclusion if not there
-    if resp['stage'] != "conclusion":
-        resp = send_chat("treatment", session_id)
-        print(f"Forced Conclusion. Stage: {resp['stage']}")
-        
-    # Now we are in conclusion.
-    # Try saying "ok"
-    print("--- Testing 'ok' loop ---")
-    resp = send_chat("ok", session_id)
-    print(f"Response to 'ok': Stage={resp['stage']}")
-    
-    if resp['stage'] == "conclusion":
-        print("FAIL: Stuck in conclusion loop on 'ok'")
-    else:
-        print(f"SUCCESS: 'ok' led to {resp['stage']}")
 
-    # Try saying "thank you" (if we didn't exit already, or restart session)
-    # Let's restart session to test 'thank you' specifically
+def assert_stage(resp: dict, expected: str, label: str) -> bool:
+    actual = resp.get("stage")
+    if actual != expected:
+        print(f"FAIL [{label}]: expected stage={expected}, got stage={actual}")
+        return False
+    print(f"PASS [{label}]: stage={actual}")
+    return True
+
+
+def main() -> int:
     session_id = str(uuid.uuid4())
-    print(f"\nStarting Session 2: {session_id}")
-    send_chat("hello", session_id)
-    for i in range(5):
-        send_chat(f"symptom {i}", session_id)
-    send_chat("treatment", session_id) # Ensure conclusion
-    
-    print("--- Testing 'thank you' loop ---")
-    resp = send_chat("thank you", session_id)
-    print(f"Response to 'thank you': Stage={resp['stage']}")
-    
-    if resp['stage'] == "conclusion":
-        print("FAIL: Stuck in conclusion loop on 'thank you'")
+    print(f"Session: {session_id}\n")
+
+    failures = 0
+
+    # 1. Greeting -> bot should move to chatting after the first turn.
+    resp = send_chat("hello", session_id)
+    failures += 0 if assert_stage(resp, "chatting", "greeting transitions to chatting") else 1
+
+    # 2. Normal fitness question -> stays in chatting.
+    resp = send_chat("I want to lose weight, where do I start?", session_id)
+    failures += 0 if assert_stage(resp, "chatting", "fitness question stays in chatting") else 1
+
+    # 3. Follow-up question -> still chatting (no rigid funnel).
+    resp = send_chat("I have no equipment at home.", session_id)
+    failures += 0 if assert_stage(resp, "chatting", "follow-up stays in chatting") else 1
+
+    # 4. Goodbye keyword -> moves to goodbye.
+    resp = send_chat("thanks!", session_id)
+    failures += 0 if assert_stage(resp, "goodbye", "thanks triggers goodbye") else 1
+
+    # 5. Greeting after goodbye -> restarts to greeting.
+    resp = send_chat("hi", session_id)
+    failures += 0 if assert_stage(resp, "greeting", "hi after goodbye restarts to greeting") else 1
+
+    # 6. Referral trigger -> response should include a referral notice.
+    referral_session = str(uuid.uuid4())
+    send_chat("hello", referral_session)
+    resp = send_chat("I think I tore something in my knee", referral_session)
+    body = (resp.get("response") or "").lower()
+    if "qualified professional" in body or "physical therapist" in body or "doctor" in body:
+        print("PASS [injury triggers referral language]")
     else:
-        print(f"SUCCESS: 'thank you' led to {resp['stage']}")
+        print(f"FAIL [injury triggers referral language]: response={body[:200]}")
+        failures += 1
+
+    print(f"\n{failures} failure(s).")
+    return 1 if failures else 0
+
 
 if __name__ == "__main__":
-    test_loop_bug()
+    sys.exit(main())

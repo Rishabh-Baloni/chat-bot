@@ -126,44 +126,44 @@ class ObservabilityMetrics:
         }
 
 class MedicalSafetyEnforcer:
-    """Enforce medical disclaimers and safety"""
-    
-    MEDICAL_KEYWORDS = [
-        'symptom', 'diagnosis', 'treatment', 'medicine', 'drug', 'medication',
-        'disease', 'illness', 'condition', 'pain', 'fever', 'infection',
-        'doctor', 'physician', 'hospital', 'clinic', 'medical', 'health',
-        'therapy', 'surgery', 'prescription', 'dosage', 'side effect'
+    """Trigger a professional-referral note for situations FitGuide should not handle."""
+
+    # Narrow trigger list: only fires when the user mentions a real referral-worthy
+    # situation. Generic fitness words like "pain", "medication", "therapy", or
+    # "health" are intentionally excluded so normal fitness chat is not tagged.
+    REFERRAL_KEYWORDS = [
+        'injury', 'injured', 'tore', 'torn', 'sprain', 'sprained',
+        'broken bone', 'fracture', 'fractured', 'dislocated',
+        'pregnant', 'pregnancy', 'postpartum',
+        'surgery', 'post-op', 'recovering from surgery',
+        'chronic illness', 'diabetes', 'heart condition',
+        'disordered eating', 'eating disorder', 'anorexia', 'bulimia',
     ]
-    
-    MEDICAL_DISCLAIMER = """
-⚠️ MEDICAL DISCLAIMER: This AI assistant provides general information only and is not a substitute for professional medical advice, diagnosis, or treatment. Always consult qualified healthcare professionals for medical concerns. Never disregard professional medical advice or delay seeking it because of information from this AI.
+
+    REFERRAL_NOTICE = """
+
+Heads up: that sounds like it's better handled by a qualified professional (doctor, physical therapist, registered dietitian, or licensed mental health provider) than by a general fitness assistant. Please reach out to one — I'll be here to help you ease back in once you're cleared.
 """
-    
+
     @staticmethod
     def requires_medical_disclaimer(message: str, knowledge_entries: List[Dict] = None) -> bool:
-        """Check if medical disclaimer is required"""
+        """Check if a professional-referral notice should be appended."""
         message_lower = message.lower()
-        
-        # Check message content
-        if any(keyword in message_lower for keyword in MedicalSafetyEnforcer.MEDICAL_KEYWORDS):
+
+        if any(keyword in message_lower for keyword in MedicalSafetyEnforcer.REFERRAL_KEYWORDS):
             return True
-        
-        # Check knowledge entries
+
         if knowledge_entries:
             for entry in knowledge_entries:
-                if entry.get('domain') == 'medical' or entry.get('risk_level') == 'high':
+                if entry.get('risk_level') == 'high':
                     return True
-                
-                topic = entry.get('topic', '').lower()
-                if any(keyword in topic for keyword in MedicalSafetyEnforcer.MEDICAL_KEYWORDS):
-                    return True
-        
+
         return False
-    
+
     @staticmethod
     def add_medical_disclaimer(response: str) -> str:
-        """Add medical disclaimer to response"""
-        return response + MedicalSafetyEnforcer.MEDICAL_DISCLAIMER
+        """Append the professional-referral notice to a response."""
+        return response + MedicalSafetyEnforcer.REFERRAL_NOTICE
 
 # Global instances
 secret_masker = SecretMasker()
